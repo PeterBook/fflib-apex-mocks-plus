@@ -28,6 +28,11 @@ public with sharing class fflib_IDGenerator
 	private static Integer fakeIdCount = 0;
 	private static final String ID_PATTERN = '000000000000';
 
+	private static final Map<SObjectType, String> SPECIAL_SOBJECTS = new Map<SObjectType, String>
+	{
+			CaseTeamRole.SObjectType => '0B7'
+	};
+
 	/**
 	 * Generate a fake Salesforce Id for the given SObjectType
 	 */
@@ -38,6 +43,27 @@ public with sharing class fflib_IDGenerator
 
 		String fakeIdPrefix = ID_PATTERN.substring(0, 12 - fakeIdCount.format().length());
 
-		return Id.valueOf(keyPrefix + fakeIdPrefix + fakeIdCount);
+		return Id.valueOf(checkNullPrefix(sobjectType, keyPrefix) + fakeIdPrefix + fakeIdCount);
+	}
+
+
+	/**
+	 * checkNullPrefix
+	 *
+	 * @description Some SObjects return a null value as keyPrefix, like CaseTeamRole
+	 *              this will replace that with a hardcoded ID prefix
+	 *
+	 * @param sObjectType
+	 * @param prefix
+	 *
+	 * @return Returns the SObject key prefix
+	 */
+	private static String checkNullPrefix(SObjectType sObjectType, String prefix)
+	{
+		if (null == prefix && SPECIAL_SOBJECTS.containsKey(sObjectType))
+		{
+			return SPECIAL_SOBJECTS.get(sObjectType);
+		}
+		return prefix;
 	}
 }

@@ -30,6 +30,7 @@ public with sharing class fflib_IDGenerator
 
 	private static final Map<SObjectType, String> SPECIAL_SOBJECTS = new Map<SObjectType, String>
 	{
+			CaseTeamMember.SObjectType => '0B6',
 			CaseTeamRole.SObjectType => '0B7'
 	};
 
